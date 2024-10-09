@@ -2,7 +2,7 @@ file_format: "1"
 id: bleboard
 name: BLEboard
 type: shield
-url: https://github.com/quishiclocus/qmk-kb-xiaoble/
+url: https://github.com/quishiclocus/zmk-config-bleboard
 requires: [xiao_ble]
 features:
   - keys
