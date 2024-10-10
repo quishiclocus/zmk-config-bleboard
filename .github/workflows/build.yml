@@ -1,6 +1,18 @@
 name: Build Firmware
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches:
+      - 'main'
+      - '!release'
+  pull-request:
+    branches:
+      - '*'
+      - '!release*'
+  workflow_dispatch:
+    branches:
+      - '*'
+      - '!release*'
 
 jobs:
   build:
