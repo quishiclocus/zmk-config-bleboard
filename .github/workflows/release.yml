@@ -10,7 +10,7 @@ jobs:
   release:
     runs-on: ubuntu-22.04
     steps:
-      - uses: build
+      - uses: ubuntu:latest
         with:
           fetch-depth: 0
 
