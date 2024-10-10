@@ -10,7 +10,7 @@ jobs:
   release:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/build@v4
+      - uses: build
         with:
           fetch-depth: 0
 
