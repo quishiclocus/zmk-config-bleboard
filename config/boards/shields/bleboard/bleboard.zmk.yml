@@ -3,6 +3,6 @@ id: bleboard
 name: BLEboard
 type: shield
 url: https://github.com/quishiclocus/zmk-config-bleboard
-requires: [xiao_ble]
+requires: [xiao_esp32s3]
 features:
   - keys
