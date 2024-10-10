@@ -10,7 +10,7 @@ jobs:
   release:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/build@v4
         with:
           fetch-depth: 0
 
@@ -18,19 +18,14 @@ jobs:
         id: get_version
         run: |
           echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-          echo "TRIMMED_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-
-      - name: REUSE Compliance Check
-        uses: fsfe/reuse-action@v4
-        with:
-          args: spdx -o zephyr-${{ steps.get_version.outputs.VERSION }}.spdx
+          echo "TRIMMED_VERSION=${GITHUB_REF#refs/tags/Alpha}" >> $GITHUB_OUTPUT
 
       - name: upload-results
         uses: actions/upload-artifact@v4
         continue-on-error: true
         with:
-          name: zephyr-${{ steps.get_version.outputs.VERSION }}.spdx
-          path: zephyr-${{ steps.get_version.outputs.VERSION }}.spdx
+          name: bleboard-${{ steps.get_version.outputs.VERSION }}.zip
+          path: bleboard-${{ steps.get_version.outputs.VERSION }}.zip
 
       - name: Create empty release notes body
         run: |
@@ -43,7 +38,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Zephyr ${{ steps.get_version.outputs.TRIMMED_VERSION }}
+          release_name: BLEboard ${{ steps.get_version.outputs.TRIMMED_VERSION }}
           body_path: release-notes.txt
           draft: true
           prerelease: true
@@ -55,6 +50,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: zephyr-${{ steps.get_version.outputs.VERSION }}.spdx
-          asset_name: zephyr-${{ steps.get_version.outputs.VERSION }}.spdx
-          asset_content_type: text/plain
+          asset_path: bleboard-${{ steps.get_version.outputs.VERSION }}.zip
+          asset_name: bleboard-${{ steps.get_version.outputs.VERSION }}.zip
+          asset_content_type: application/zip
