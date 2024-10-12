@@ -8,48 +8,46 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: ubuntu:latest
-        with:
-          fetch-depth: 0
-
-      - name: Get the version
-        id: get_version
-        run: |
-          echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-          echo "TRIMMED_VERSION=${GITHUB_REF#refs/tags/Alpha}" >> $GITHUB_OUTPUT
-
-      - name: upload-results
-        uses: actions/upload-artifact@v4
-        continue-on-error: true
-        with:
-          name: bleboard-${{ steps.get_version.outputs.VERSION }}.zip
-          path: bleboard-${{ steps.get_version.outputs.VERSION }}.zip
-
-      - name: Create empty release notes body
-        run: |
-          echo "TODO: add release overview and notes link" > release-notes.txt
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: BLEboard ${{ steps.get_version.outputs.TRIMMED_VERSION }}
-          body_path: release-notes.txt
-          draft: true
-          prerelease: true
-
-      - name: Upload Release Assets
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: bleboard-${{ steps.get_version.outputs.VERSION }}.zip
-          asset_name: bleboard-${{ steps.get_version.outputs.VERSION }}.zip
-          asset_content_type: application/zip
+    container:
+      runs-on: ubuntu-latest
+      container: node:10.16-jessie
+      steps:
+        - name: Get the version
+          id: get_version
+          run: |
+            echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+            echo "TRIMMED_VERSION=${GITHUB_REF#refs/tags/Alpha}" >> $GITHUB_OUTPUT
+  
+        - name: upload-results
+          uses: actions/upload-artifact@v4
+          continue-on-error: true
+          with:
+            name: bleboard-${{ steps.get_version.outputs.VERSION }}.zip
+            path: bleboard-${{ steps.get_version.outputs.VERSION }}.zip
+  
+        - name: Create empty release notes body
+          run: |
+            echo "TODO: add release overview and notes link" > release-notes.txt
+  
+        - name: Create Release
+          id: create_release
+          uses: actions/create-release@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            tag_name: ${{ github.ref }}
+            release_name: BLEboard ${{ steps.get_version.outputs.TRIMMED_VERSION }}
+            body_path: release-notes.txt
+            draft: true
+            prerelease: true
+  
+        - name: Upload Release Assets
+          id: upload-release-asset
+          uses: actions/upload-release-asset@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            upload_url: ${{ steps.create_release.outputs.upload_url }}
+            asset_path: bleboard-${{ steps.get_version.outputs.VERSION }}.zip
+            asset_name: bleboard-${{ steps.get_version.outputs.VERSION }}.zip
+            asset_content_type: application/zip
